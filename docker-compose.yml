@@ -1,0 +1,30 @@
+version: '3'
+services:
+  web:
+    build: ./web
+    environment:
+      - MONGO_HOST=mongo
+    ports:
+      - 5000:5000    
+    restart: always
+  publisher:
+    build: ./publisher
+    environment:
+      - TWITTER_CONSUMER_KEY=${TWITTER_CONSUMER_KEY}
+      - TWITTER_SECRET=${TWITTER_SECRET}
+      - TWITTER_ACCESS_TOKEN=${TWITTER_ACCESS_TOKEN}
+      - TWITTER_ACCESS_TOKEN_SECRET=${TWITTER_ACCESS_TOKEN_SECRET}
+      - RABBITMQ_HOST=rabbitmq
+    restart: always
+  elmundoes-bot:
+    build: ./elmundoes-bot
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - MONGO_HOST=mongo
+    restart: always
+  rabbitmq:
+    image: "rabbitmq:3"
+    restart: always
+  mongo:
+    image: "mongo:4"
+    restart: always

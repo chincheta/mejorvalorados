@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<table>
+    {% for message in comments %}
+    <tr>
+        <td>{{ message.ups }} / {{ message.downs }}</td>
+        <td>{{ message.posted_at }}</td>
+        <td>{{ message.heat }}</td>
+        <td><a href='{{ message.url }}'>{{ message.body }}</a></td>
+    </tr>
+    {% endfor %}
+</table>
+</body>
+</html>
