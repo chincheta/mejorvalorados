@@ -9,7 +9,7 @@
     {% for message in comments %}
     <tr>
         <td>{{ message.ups }} / {{ message.downs }}</td>
-        <td>{{ message.posted_at }}</td>
+        <td><script>var date = new Date({{ message.posted_at }}*1000);document.write(date.toString());</script></td>
         <td>{{ message.heat }}</td>
         <td><a href='{{ message.url }}'>{{ message.body }}</a></td>
     </tr>
