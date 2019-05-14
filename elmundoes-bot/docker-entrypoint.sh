@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 
-python posts_worker.py &
-python comments_worker.py &
-python votes_worker.py &
-python screening_worker.py &
+python -u posts_worker.py &
+python -u comments_worker.py &
+python -u votes_worker.py &
+python -u screening_worker.py &
 
-while sleep 60; do
-    echo "sleeping..."
-done
+while true; do sleep 1; done

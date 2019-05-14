@@ -1,4 +1,5 @@
 import argparse
+import logging
 import os
 import time
 
@@ -13,14 +14,13 @@ polling_period = int(os.getenv('POSTS_POLLING_PERIOD') or '600')
 def delete_older_than(hours, db):
     t = time.time()
     db['posts'].delete_many({'posted_at': {'$lt': t - (3600 * hours)}})
-    mongo.close()
 
 
-# logging.basicConfig(
-#    filename='rss-client.log',
-#    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-#    level=logging.DEBUG
-#    )
+logging.basicConfig(
+    format='%(asctime)s - %(message)s',
+    level=logging.INFO
+)
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument("--purge", help="Delete all stored posts", action='store_true')
@@ -41,6 +41,8 @@ while True:
     delete_older_than(12, db)
 
     feed = feedparser.parse('https://e00-elmundo.uecdn.es/elmundo/rss/portada.xml')
+    post_count = len(feed.entries)
+    new_post_count = 0
     for item in feed.entries:
         post = db['posts'].find_one({'url': item.link})
         if post is None:
@@ -50,8 +52,10 @@ while True:
                 'comment_count': 0,
                 'posted_at': int(dateutil.parser.parse(item.published).timestamp())
             }
-            print(post['url'])
             if post['posted_at'] > (time.time() - 12 * 3600):
                 db['posts'].insert_one(post)
+                new_post_count = new_post_count + 1
+                logging.info('New post: ' + item.link)
     mongo.close()
+    logging.info(str(post_count) + ' posts processed. ' + str(new_post_count) + ' new.')
     time.sleep(polling_period)
