@@ -10,9 +10,7 @@ from bs4 import BeautifulSoup
 from pymongo import MongoClient
 
 
-def delete_older_than(hours):
-    mongo = MongoClient(mongo_host)
-    db = mongo['elmundoes-bot']
+def delete_older_than(hours, db):
     t = time.time()
     db['comments'].delete_many({'posted_at': {'$lt': t - 3600 * hours}})
     mongo.close()
@@ -51,10 +49,9 @@ mongo_host = os.getenv('MONGO_HOST') or 'localhost'
 
 while True:
     with requests.Session() as session:
-        delete_older_than(12)
-
         mongo = MongoClient(mongo_host)
         db = mongo['elmundoes-bot']
+        delete_older_than(12, db)
 
         user_agent = random.choice(common.user_agents)
         session.headers = {'User-Agent': user_agent}

@@ -10,9 +10,7 @@ mongo_host = os.getenv('MONGO_HOST') or 'localhost'
 polling_period = int(os.getenv('POSTS_POLLING_PERIOD') or '600')
 
 
-def delete_older_than(hours):
-    mongo = MongoClient(mongo_host)
-    db = mongo['elmundoes-bot']
+def delete_older_than(hours, db):
     t = time.time()
     db['posts'].delete_many({'posted_at': {'$lt': t - (3600 * hours)}})
     mongo.close()
@@ -37,10 +35,10 @@ if args.purge:
     mongo.close()
 
 while True:
-    delete_older_than(12)
-
     mongo = MongoClient(mongo_host)
     db = mongo['elmundoes-bot']
+
+    delete_older_than(12, db)
 
     feed = feedparser.parse('https://e00-elmundo.uecdn.es/elmundo/rss/portada.xml')
     for item in feed.entries:
