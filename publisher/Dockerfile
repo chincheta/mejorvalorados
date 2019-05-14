@@ -7,4 +7,4 @@ RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
 ENV RABBITMQ_HOST rabbitmq
 
-CMD ["python", "publisher_worker.py"]
+CMD "./docker-entrypoint.sh"
