@@ -8,4 +8,18 @@ python -u comments_worker.py &
 python -u votes_worker.py &
 python -u screening_worker.py &
 
-while true; do sleep 1; done
+while sleep 10; do
+    ps aux |grep posts_worker |grep -q -v grep
+    POSTS_WORKER_STATUS=$?
+    ps aux |grep comments_worker |grep -q -v grep
+    COMMENTS_WORKER_STATUS=$?
+    ps aux |grep votes_worker |grep -q -v grep
+    VOTES_WORKER_STATUS=$?
+    ps aux |grep screening_worker |grep -q -v grep
+    SCREENING_WORKER_STATUS=$?
+
+  if [[ ${POSTS_WORKER_STATUS} -ne 0 || ${COMMENTS_WORKER_STATUS} -ne 0  || ${VOTES_WORKER_STATUS} -ne 0  || ${SCREENING_WORKER_STATUS} -ne 0 ]]; then
+    echo "One of the processes crashed. Exiting to force a restart..."
+    exit 1
+  fi
+done
