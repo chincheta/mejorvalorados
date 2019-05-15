@@ -77,4 +77,4 @@ while True:
             time.sleep(1)
         mongo.close()
         logging.info(str(new_comment_count) + ' new comments found. ' + str(post_count) + ' posts processed.')
-    time.sleep(15 * 60)
+    time.sleep(900)

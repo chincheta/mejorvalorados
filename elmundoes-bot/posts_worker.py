@@ -8,7 +8,7 @@ import feedparser
 from pymongo import MongoClient
 
 mongo_host = os.getenv('MONGO_HOST') or 'localhost'
-polling_period = int(os.getenv('POSTS_POLLING_PERIOD') or '600')
+polling_period = int(os.getenv('POSTS_POLLING_PERIOD') or '900')
 
 
 def delete_older_than(hours, db):

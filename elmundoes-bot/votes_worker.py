@@ -59,4 +59,4 @@ while True:
             time.sleep(1)
         logging.info('Votes of ' + str(comment_count) + ' comments updated.')
     mongo.close()
-    time.sleep(600)
+    time.sleep(900)
