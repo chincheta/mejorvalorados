@@ -8,7 +8,6 @@ import feedparser
 from pymongo import MongoClient
 
 mongo_host = os.getenv('MONGO_HOST') or 'localhost'
-polling_period = int(os.getenv('POSTS_POLLING_PERIOD') or '900')
 
 
 def delete_older_than(hours, db):
@@ -58,4 +57,4 @@ while True:
                 logging.info('New post: ' + item.link)
     mongo.close()
     logging.info(str(post_count) + ' posts processed. ' + str(new_post_count) + ' new.')
-    time.sleep(polling_period)
+    time.sleep(15 * 60)

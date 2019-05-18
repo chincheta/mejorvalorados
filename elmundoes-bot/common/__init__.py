@@ -1,6 +1,7 @@
+import calendar
+
 import math
 import pytz
-import calendar
 
 user_agents = [
     # Chrome

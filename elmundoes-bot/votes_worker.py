@@ -5,6 +5,7 @@ import time
 
 import common
 import requests
+import pika
 from bs4 import BeautifulSoup
 from pymongo import MongoClient
 
@@ -34,6 +35,8 @@ def get_comment_votes(comment_id, post_id, session):
 
 
 mongo_host = os.getenv('MONGO_HOST') or 'localhost'
+rabbitmq_host = os.getenv('RABBITMQ_HOST') or 'localhost'
+
 logging.basicConfig(
     format='%(asctime)s - %(message)s',
     level=logging.INFO
@@ -50,13 +53,30 @@ while True:
             session.get(comment['url'])
             time.sleep(1)
             votes = get_comment_votes(comment['comment_id'], comment['post_id'], session)
-
+            heat = common.heat(votes['ups'], votes['downs'], comment['posted_at'])
             query = {'comment_id': comment['comment_id'], 'post_id': comment['post_id']}
-            values = {'$set': {'ups': votes['ups'], 'downs': votes['downs']}}
+            values = {'$set': {'ups': votes['ups'], 'downs': votes['downs'], 'heat': heat}}
 
             db['comments'].update_one(query, values)
             comment_count = comment_count + 1
             time.sleep(1)
         logging.info('Votes of ' + str(comment_count) + ' comments updated.')
+
+    # Post if new best
+    for comment in db['comments'].find().sort('heat', -1).limit(1):
+        if 'posted' not in comment:
+            connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitmq_host))
+            channel = connection.channel()
+            channel.queue_declare(queue='post.event.screening_passed')
+            channel.basic_publish(
+                exchange='',
+                routing_key='post.event.screening_passed',
+                body=comment['body'] + ' ' + comment['url'])
+
+            query = {'comment_id': comment['comment_id'], 'post_id': comment['post_id']}
+            values = {'$set': {'posted': True}}
+            db['comments'].update_one(query, values)
+            connection.close()
+
     mongo.close()
-    time.sleep(900)
+    time.sleep(17 * 60)
