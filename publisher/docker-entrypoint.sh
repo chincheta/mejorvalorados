@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
-./wait-for-it.sh rabbitmq:5672
+export RABBITMQ_HOST=${RABBITMQ_HOST:-localhost}
+
+./wait-for-it.sh ${RABBITMQ_HOST}:5672
 
 python -u publisher_worker.py

@@ -4,10 +4,12 @@ import os
 import pika
 import tweepy
 
-twitter_consumer_key = os.getenv('TWITTER_CONSUMER_KEY') or ''
-twitter_secret = os.getenv('TWITTER_SECRET') or ''
-twitter_access_token = os.getenv('TWITTER_ACCESS_TOKEN') or ''
-twitter_access_token_secret = os.getenv('TWITTER_ACCESS_TOKEN_SECRET') or ''
+from secrets import get_secret
+
+twitter_consumer_key = get_secret('TWITTER_CONSUMER_KEY')
+twitter_secret = get_secret('TWITTER_SECRET') or ''
+twitter_access_token = get_secret('TWITTER_ACCESS_TOKEN') or ''
+twitter_access_token_secret = get_secret('TWITTER_ACCESS_TOKEN_SECRET') or ''
 
 rabbitmq_host = os.getenv('RABBITMQ_HOST') or 'localhost'
 

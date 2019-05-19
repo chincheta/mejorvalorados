@@ -1,37 +1,64 @@
-version: '3'
+version: "3.7"
 services:
   web:
-    build: ./web
+    image: chincheta/mejorvalorados_web:latest
+    deploy:
+      restart_policy:
+        condition: on-failure
     environment:
-      - MONGO_HOST=mongo
+      MONGO_HOST: mongo
     ports:
-      - 5000:5000    
-    restart: always
-    depends_on:
-      - mongo
+      - "5000:5000"
+    networks: 
+      - mejorvaloradosnet
   publisher:
-    build: ./publisher
+    image: chincheta/mejorvalorados_publisher:latest
+    deploy:
+      restart_policy:
+        condition: on-failure
     environment:
-      - TWITTER_CONSUMER_KEY=${TWITTER_CONSUMER_KEY}
-      - TWITTER_SECRET=${TWITTER_SECRET}
-      - TWITTER_ACCESS_TOKEN=${TWITTER_ACCESS_TOKEN}
-      - TWITTER_ACCESS_TOKEN_SECRET=${TWITTER_ACCESS_TOKEN_SECRET}
-      - RABBITMQ_HOST=rabbitmq
-    restart: always
-    depends_on:
-      - rabbitmq
+      RABBITMQ_HOST: rabbitmq
+    networks: 
+      - mejorvaloradosnet
+    secrets:
+      - TWITTER_CONSUMER_KEY
+      - TWITTER_SECRET
+      - TWITTER_ACCESS_TOKEN
+      - TWITTER_ACCESS_TOKEN_SECRET
   elmundoes-bot:
-    build: ./elmundoes-bot
+    image: chincheta/mejorvalorados_elmundoes-bot:latest
+    deploy:
+      restart_policy:
+        condition: on-failure
     environment:
-      - RABBITMQ_HOST=rabbitmq
-      - MONGO_HOST=mongo
-    restart: always
-    depends_on:
-      - rabbitmq
-      - mongo
+      RABBITMQ_HOST: rabbitmq
+      MONGO_HOST: mongo
+    networks:
+      - mejorvaloradosnet
   rabbitmq:
-    image: "rabbitmq:3"
-    restart: always
+    image: rabbitmq:3
+    deploy:
+      restart_policy:
+        condition: on-failure
+    networks: 
+      - mejorvaloradosnet
   mongo:
-    image: "mongo:4"
-    restart: always
+    image: mongo:4
+    deploy:
+      restart_policy:
+        condition: on-failure
+    networks: 
+      - mejorvaloradosnet
+
+networks: 
+  mejorvaloradosnet:
+
+secrets:
+  TWITTER_CONSUMER_KEY:
+    external: true
+  TWITTER_SECRET:
+    external: true
+  TWITTER_ACCESS_TOKEN:
+    external: true
+  TWITTER_ACCESS_TOKEN_SECRET:
+    external: true
