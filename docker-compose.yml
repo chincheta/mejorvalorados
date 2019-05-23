@@ -35,18 +35,6 @@ services:
       MONGO_HOST: mongo
     networks:
       - mejorvaloradosnet
-  okdiariocom-bot:
-    image: chincheta/mejorvalorados_okdiariocom-bot:latest
-    deploy:
-      restart_policy:
-        condition: on-failure
-    environment:
-      RABBITMQ_HOST: rabbitmq
-      MONGO_HOST: mongo
-    networks:
-      - mejorvaloradosnet
-    secrets:
-      - DISQUS_API_KEY
   rabbitmq:
     image: rabbitmq:3
     deploy:
