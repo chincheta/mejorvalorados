@@ -16,9 +16,9 @@
     </tr>
     {% endfor %}
 </table>
-<h1>okdiario</h1>
+<h1>elpais</h1>
 <table>
-    {% for message in okdiario %}
+    {% for message in elpais %}
     <tr>
         <td>{{ message.ups }} / {{ message.downs }}</td>
         <td><script>var date = new Date({{ message.posted_at }}*1000);document.write(date.toString());</script></td>

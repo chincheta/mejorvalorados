@@ -35,6 +35,16 @@ services:
       MONGO_HOST: mongo
     networks:
       - mejorvaloradosnet
+  elpaiscom-bot:
+    image: chincheta/mejorvalorados_elpaiscom-bot:latest
+    deploy:
+      restart_policy:
+        condition: on-failure
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      MONGO_HOST: mongo
+    networks:
+      - mejorvaloradosnet
   rabbitmq:
     image: rabbitmq:3
     deploy:
