@@ -112,22 +112,23 @@ def fetch_elpaiscom_comments(url, session):
                     if raw_comments is not None:
 
                         for raw_comment in raw_comments['mensajes']:
-                            body = clean_comment(raw_comment['contenido'])
-                            if is_comment_ok_for_twitter(body):
-                                if 'valoracion_positive' not in raw_comment:
-                                    raw_comment['valoracion_positive'] = 0
-                                if 'valoracion_negative' not in raw_comment:
-                                    raw_comment['valoracion_negative'] = 0
-                                comment = {
-                                    'comment_id': raw_comment['idMsg'],
-                                    'url': url,
-                                    'post_id': post_id,
-                                    'posted_at': raw_comment['tsMensaje'],
-                                    'ups': raw_comment['valoracion_positive'],
-                                    'downs': raw_comment['valoracion_negative'],
-                                    'heat': 0,
-                                    'body': body
-                                }
-                                comment['heat'] = heat(comment['ups'], comment['downs'], comment['posted_at'])
-                                comments.append(comment)
+                            if raw_comment['idMsgRespuesta'] == post_id:  # Otherwise is a reply
+                                body = clean_comment(raw_comment['contenido'])
+                                if is_comment_ok_for_twitter(body):
+                                    if 'valoracion_positive' not in raw_comment:
+                                        raw_comment['valoracion_positive'] = 0
+                                    if 'valoracion_negative' not in raw_comment:
+                                        raw_comment['valoracion_negative'] = 0
+                                    comment = {
+                                        'comment_id': raw_comment['idMsg'],
+                                        'url': url,
+                                        'post_id': post_id,
+                                        'posted_at': raw_comment['tsMensaje'],
+                                        'ups': raw_comment['valoracion_positive'],
+                                        'downs': raw_comment['valoracion_negative'],
+                                        'heat': 0,
+                                        'body': body
+                                    }
+                                    comment['heat'] = heat(comment['ups'], comment['downs'], comment['posted_at'])
+                                    comments.append(comment)
     return comments
