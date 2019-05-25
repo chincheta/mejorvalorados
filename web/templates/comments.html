@@ -27,5 +27,15 @@
     </tr>
     {% endfor %}
 </table>
-</body>
+<h1>okdiario</h1>
+<table>
+    {% for message in okdiario %}
+    <tr>
+        <td>{{ message.ups }} / {{ message.downs }}</td>
+        <td><script>var date = new Date({{ message.posted_at }}*1000);document.write(date.toString());</script></td>
+        <td>{{ message.heat }}</td>
+        <td><a href='{{ message.url }}'>{{ message.body }}</a></td>
+    </tr>
+    {% endfor %}
+</table></body>
 </html>

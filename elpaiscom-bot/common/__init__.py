@@ -47,7 +47,7 @@ def heat(ups, downs, timestamp):
     norm_ups = max(ups - downs, 1)
 
     seconds = timestamp - 316710600
-    return round(math.log(norm_ups) + seconds / (2 * 3600.0), 7)
+    return round(math.log(norm_ups) + seconds / (6 * 3600.0), 7)
 
 
 def best(ups, downs):
