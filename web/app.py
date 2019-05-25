@@ -12,9 +12,10 @@ def index():
 
     elmundo = mongo['elmundoes-bot']['comments'].find().sort('heat', -1)
     elpais = mongo['elpaiscom-bot']['comments'].find().sort('heat', -1)
+    okdiario = mongo['okdiariocom-bot']['comments'].find().sort('heat', -1)
 
     mongo.close()
-    return render_template("comments.html", elmundo=elmundo, elpais=elpais)
+    return render_template("comments.html", elmundo=elmundo, elpais=elpais, okdiario=okdiario)
 
 
 if __name__ == '__main__':
