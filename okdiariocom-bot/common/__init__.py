@@ -92,5 +92,5 @@ def fetch_okdiariocom_comments(url, disqus_api_key, cursor=None):
 
     disqus_comments = disqus_response['response']
     if disqus_response['cursor']['hasNext']:
-        disqus_comments.append(fetch_okdiariocom_comments(url, disqus_response['cursor']['next']), disqus_api_key)
+        disqus_comments.append(fetch_okdiariocom_comments(url, disqus_api_key, disqus_response['cursor']['next']))
     return disqus_comments
