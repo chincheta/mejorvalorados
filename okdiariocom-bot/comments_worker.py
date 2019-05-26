@@ -1,3 +1,4 @@
+import collections
 import logging
 import os
 import time
@@ -21,21 +22,23 @@ def get_comments(url):
     disqus_comments = common.fetch_okdiariocom_comments(url, disqus_key)
 
     for disqus_comment in disqus_comments:
-        if disqus_comment['parent'] is None:
-            body = ' '.join(disqus_comment['raw_message'].replace('\n', ' ').replace('\r', '').split())
-            body = BeautifulSoup(body, "html.parser").text
-            if common.is_comment_ok_for_twitter(body):
-                comment = {
-                    'comment_id': disqus_comment['id'],
-                    'url': url,
-                    'post_id': disqus_comment['thread'],
-                    'posted_at': common.dt2ts(datetime.fromisoformat(disqus_comment['createdAt'])),
-                    'ups': disqus_comment['likes'],
-                    'downs': disqus_comment['dislikes'],
-                    'heat': 0,
-                    'body': body
-                }
-                comments.append(comment)
+        # Workaround to stop bug. TODO: Fix it!
+        if isinstance(disqus_comment, collections.Mapping):
+            if disqus_comment['parent'] is None:
+                body = ' '.join(disqus_comment['raw_message'].replace('\n', ' ').replace('\r', '').split())
+                body = BeautifulSoup(body, "html.parser").text
+                if common.is_comment_ok_for_twitter(body):
+                    comment = {
+                        'comment_id': disqus_comment['id'],
+                        'url': url,
+                        'post_id': disqus_comment['thread'],
+                        'posted_at': common.dt2ts(datetime.fromisoformat(disqus_comment['createdAt'])),
+                        'ups': disqus_comment['likes'],
+                        'downs': disqus_comment['dislikes'],
+                        'heat': 0,
+                        'body': body
+                    }
+                    comments.append(comment)
     return comments
 
 
